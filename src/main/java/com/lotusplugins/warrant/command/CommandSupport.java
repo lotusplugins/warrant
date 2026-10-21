@@ -68,15 +68,23 @@ public final class CommandSupport {
     }
 
     void reply(CommandContext<CommandSender> ctx, String messageKey, OfflinePlayer target) {
+        reply(ctx, messageKey, nameOf(target));
+    }
+
+    void reply(CommandContext<CommandSender> ctx, String messageKey, String targetName) {
         audiences
                 .sender(ctx.sender())
-                .sendMessage(config.message(messageKey, Placeholder.unparsed("name", nameOf(target))));
+                .sendMessage(config.message(messageKey, Placeholder.unparsed("name", targetName)));
     }
 
     void announce(CommandContext<CommandSender> ctx, String messageKey, OfflinePlayer target, TagResolver... extra) {
+        announce(ctx, messageKey, nameOf(target), extra);
+    }
+
+    void announce(CommandContext<CommandSender> ctx, String messageKey, String targetName, TagResolver... extra) {
         boolean silent = ctx.flags().isPresent("silent") || ctx.contains(ReasonParser.LEADING_SILENT_KEY);
         var resolver = TagResolver.builder()
-                .resolver(Placeholder.unparsed("name", nameOf(target)))
+                .resolver(Placeholder.unparsed("name", targetName))
                 .resolver(Placeholder.unparsed("staff", ctx.sender().getName()))
                 .resolver(config.reason(reasonOf(ctx)))
                 .resolvers(extra)
@@ -88,11 +96,15 @@ public final class CommandSupport {
     }
 
     synchronized boolean tryPunish(CommandContext<CommandSender> ctx, OfflinePlayer target, Punishment punishment) {
-        if (cancelled(ctx, target, new PlayerPunishedEvent(punishment))) {
+        return tryPunish(ctx, nameOf(target), punishment);
+    }
+
+    synchronized boolean tryPunish(CommandContext<CommandSender> ctx, String targetName, Punishment punishment) {
+        if (cancelled(ctx, targetName, new PlayerPunishedEvent(punishment))) {
             return false;
         }
         if (!repository.create(punishment)) {
-            reply(ctx, punishment.type().name().toLowerCase(java.util.Locale.ROOT) + ".already-active", target);
+            reply(ctx, messageKey(punishment.type()) + ".already-active", targetName);
             return false;
         }
         counter.increment();
@@ -103,7 +115,11 @@ public final class CommandSupport {
     }
 
     synchronized boolean tryRevoke(CommandContext<CommandSender> ctx, OfflinePlayer target, Punishment punishment) {
-        if (cancelled(ctx, target, new PlayerPunishmentRevokedEvent(punishment))) {
+        return tryRevoke(ctx, nameOf(target), punishment);
+    }
+
+    synchronized boolean tryRevoke(CommandContext<CommandSender> ctx, String targetName, Punishment punishment) {
+        if (cancelled(ctx, targetName, new PlayerPunishmentRevokedEvent(punishment))) {
             return false;
         }
         repository.revoke(punishment.id(), issuerId(ctx.sender()), reasonOf(ctx), Instant.now());
@@ -114,12 +130,16 @@ public final class CommandSupport {
     }
 
     private <T extends Event & Cancellable> boolean cancelled(
-            CommandContext<CommandSender> ctx, OfflinePlayer target, T event) {
+            CommandContext<CommandSender> ctx, String targetName, T event) {
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-            reply(ctx, "cancelled", target);
+            reply(ctx, "cancelled", targetName);
         }
         return event.isCancelled();
+    }
+
+    static String messageKey(PunishmentType type) {
+        return type.name().toLowerCase(java.util.Locale.ROOT).replace("_", "");
     }
 
     static @Nullable String reasonOf(CommandContext<CommandSender> ctx) {

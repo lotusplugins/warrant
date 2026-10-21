@@ -15,6 +15,7 @@ Warn, kick, mute and ban players, permanently or for a set time, with a full his
 ## Features
 
 - **Warnings, kicks, mutes and bans.** Mutes and bans can be permanent or temporary (`/tempmute`, `/tempban`).
+- **IP bans.** Ban an address directly or through a player's last known IP; everyone connecting from it is refused.
 - **Punishment history.** Every punishment is recorded, including revoked and expired ones.
 - **Silent mode.** Add `-s` / `--silent` to any command so only staff with `warrant.notify` see the announcement.
 - **Offline targets.** Ban, mute or warn players who aren't online. Warnings are delivered the next time they join.
@@ -52,6 +53,9 @@ Warn, kick, mute and ban players, permanently or for a set time, with a full his
 | `/ban <player> [reason]`                 | Permanently ban a player                       | `warrant.ban`         |
 | `/tempban <player> <duration> [reason]`  | Ban a player for a set time                    | `warrant.tempban`     |
 | `/unban <player> [reason]`               | Lift an active ban                             | `warrant.unban`       |
+| `/ipban <player\|ip> [reason]`            | Ban an IP address, or a player's last IP       | `warrant.ipban`       |
+| `/tempipban <player\|ip> <duration> [reason]` | Ban an IP address for a set time           | `warrant.tempipban`   |
+| `/unipban <player\|ip> [reason]`          | Lift an active IP ban                          | `warrant.unipban`     |
 | `/punish history <player>`               | View a player's punishment history             | `warrant.history`     |
 
 ### Durations

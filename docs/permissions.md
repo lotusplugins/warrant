@@ -12,7 +12,7 @@ Most servers only need these three groups.
 | Permission              | Includes                                                                           |
 |-------------------------|------------------------------------------------------------------------------------|
 | `warrant.moderator` | mute, tempmute, unmute, warn, unwarn, kick, history and notify                     |
-| `warrant.admin`     | everything in moderator, plus ban, tempban, unban and import                       |
+| `warrant.admin`     | everything in moderator, plus ban, tempban, unban, IP bans and import                       |
 | `warrant.*`         | everything in admin, plus `warrant.exempt`                                     |
 
 ## Individual nodes
@@ -22,6 +22,9 @@ Most servers only need these three groups.
 | `warrant.ban`       | Issue permanent bans                              | op      |
 | `warrant.tempban`   | Issue temporary bans                              | op      |
 | `warrant.unban`     | Revoke bans                                       | op      |
+| `warrant.ipban`     | Issue permanent IP bans                           | op      |
+| `warrant.tempipban` | Issue temporary IP bans                           | op      |
+| `warrant.unipban`   | Revoke IP bans                                    | op      |
 | `warrant.mute`      | Issue permanent mutes                             | op      |
 | `warrant.tempmute`  | Issue temporary mutes                             | op      |
 | `warrant.unmute`    | Revoke mutes                                      | op      |

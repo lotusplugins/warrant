@@ -387,4 +387,15 @@ class H2PunishmentRepositoryTest {
 
         assertEquals(Optional.of(second), repository.findLastAddress(player));
     }
+
+    @Test
+    void playersSharingAnAddressAreAllFound() throws Exception {
+        var shared = java.net.InetAddress.getByName("203.0.113.7");
+        UUID other = UUID.randomUUID();
+        repository.recordAddress(player, shared, Instant.now());
+        repository.recordAddress(other, shared, Instant.now());
+        repository.recordAddress(UUID.randomUUID(), java.net.InetAddress.getByName("203.0.113.8"), Instant.now());
+
+        assertEquals(Set.of(player, other), new HashSet<>(repository.findPlayersByAddress(shared)));
+    }
 }

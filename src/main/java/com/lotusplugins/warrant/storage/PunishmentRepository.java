@@ -33,4 +33,6 @@ public interface PunishmentRepository {
     void recordAddress(UUID player, InetAddress address, Instant seenAt);
 
     Optional<InetAddress> findLastAddress(UUID player);
+
+    List<UUID> findPlayersByAddress(InetAddress address);
 }
