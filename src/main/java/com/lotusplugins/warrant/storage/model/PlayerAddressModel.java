@@ -26,6 +26,10 @@ public class PlayerAddressModel {
         this.lastSeen = lastSeen;
     }
 
+    public UUID getPlayer() {
+        return player;
+    }
+
     public InetAddress toAddress() throws UnknownHostException {
         return InetAddress.getByName(address);
     }

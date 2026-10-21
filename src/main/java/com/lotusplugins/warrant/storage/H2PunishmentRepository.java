@@ -251,6 +251,18 @@ public class H2PunishmentRepository implements PunishmentRepository {
     }
 
     @Override
+    public List<UUID> findPlayersByAddress(InetAddress address) {
+        try {
+            requireOpen();
+            return addressDao.queryForEq("address", address.getHostAddress()).stream()
+                    .map(PlayerAddressModel::getPlayer)
+                    .toList();
+        } catch (SQLException e) {
+            throw new StorageException("read players by address", e);
+        }
+    }
+
+    @Override
     public Optional<InetAddress> findLastAddress(UUID player) {
         try {
             requireOpen();

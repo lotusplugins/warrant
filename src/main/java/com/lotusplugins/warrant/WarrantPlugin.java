@@ -3,6 +3,7 @@ package com.lotusplugins.warrant;
 import com.lotusplugins.warrant.api.model.PunishmentType;
 import com.lotusplugins.warrant.command.CommandSupport;
 import com.lotusplugins.warrant.command.ImportCommands;
+import com.lotusplugins.warrant.command.IpBanCommands;
 import com.lotusplugins.warrant.command.KickCommands;
 import com.lotusplugins.warrant.command.PunishmentCommands;
 import com.lotusplugins.warrant.command.TimedPunishmentCommands;
@@ -76,6 +77,7 @@ public class WarrantPlugin extends JavaPlugin {
         var timedCommands = new TimedPunishmentCommands(support, repository, config);
         timedCommands.register(commandManager, PunishmentType.MUTE, mute -> {});
         timedCommands.register(commandManager, PunishmentType.BAN, banListener::kick);
+        new IpBanCommands(support, repository, config).register(commandManager, banListener::kickAddress);
         new WarnCommands(support, repository, warnListener).register(commandManager);
         new KickCommands(this, support, config).register(commandManager);
         var importer =
