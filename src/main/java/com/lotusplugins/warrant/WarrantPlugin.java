@@ -14,6 +14,7 @@ import com.lotusplugins.warrant.importer.ImportSources;
 import com.lotusplugins.warrant.importer.LegacyH2;
 import com.lotusplugins.warrant.importer.PunishmentImporter;
 import com.lotusplugins.warrant.importer.ServerKnownPlayers;
+import com.lotusplugins.warrant.listener.AddressListener;
 import com.lotusplugins.warrant.listener.BanListener;
 import com.lotusplugins.warrant.listener.CacheLoadListener;
 import com.lotusplugins.warrant.listener.MuteListener;
@@ -56,6 +57,7 @@ public class WarrantPlugin extends JavaPlugin {
                 .registerEvents(new MuteListener(cache, config.blockedMuteCommands(), config, adventure), this);
         getServer().getPluginManager().registerEvents(warnListener, this);
         getServer().getPluginManager().registerEvents(banListener, this);
+        getServer().getPluginManager().registerEvents(new AddressListener(this, repository), this);
 
         var counter = new PunishmentCounter();
         PluginMetrics.start(this, counter, "H2", "standalone");
