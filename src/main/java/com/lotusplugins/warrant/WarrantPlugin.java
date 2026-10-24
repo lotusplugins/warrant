@@ -1,5 +1,6 @@
 package com.lotusplugins.warrant;
 
+import com.lotusplugins.warrant.api.WarrantApi;
 import com.lotusplugins.warrant.api.model.PunishmentType;
 import com.lotusplugins.warrant.command.CommandSupport;
 import com.lotusplugins.warrant.command.ImportCommands;
@@ -29,6 +30,7 @@ import java.sql.SQLException;
 import java.util.concurrent.Executor;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.paper.LegacyPaperCommandManager;
@@ -59,6 +61,11 @@ public class WarrantPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(warnListener, this);
         getServer().getPluginManager().registerEvents(banListener, this);
         getServer().getPluginManager().registerEvents(new AddressListener(this, repository), this);
+
+        Executor async = task -> getServer().getScheduler().runTaskAsynchronously(this, task);
+        getServer()
+                .getServicesManager()
+                .register(WarrantApi.class, new WarrantApi(repository, async), this, ServicePriority.Normal);
 
         var counter = new PunishmentCounter();
         PluginMetrics.start(this, counter, "H2", "standalone");
