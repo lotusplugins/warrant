@@ -1,5 +1,6 @@
 package com.lotusplugins.warrant.storage.model;
 
+import com.google.common.net.InetAddresses;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.lotusplugins.warrant.api.model.Punishment;
@@ -49,6 +50,9 @@ public class PunishmentModel {
     @DatabaseField
     private boolean acknowledged;
 
+    @DatabaseField
+    private String address;
+
     @DatabaseField(uniqueIndexName = "punishments_import")
     private String importSource;
 
@@ -91,6 +95,8 @@ public class PunishmentModel {
                 revocation(punishment, Revocation::by),
                 revocation(punishment, Revocation::at));
         this.target = punishment.target();
+        this.address =
+                punishment.address() == null ? null : punishment.address().getHostAddress();
     }
 
     private static <T> @Nullable T revocation(Punishment punishment, Function<Revocation, T> field) {
@@ -185,6 +191,10 @@ public class PunishmentModel {
         this.revokedAt = revokedAt;
     }
 
+    public String getAddress() {
+        return this.address;
+    }
+
     public void markImported(String importSource, String importId) {
         this.importSource = importSource;
         this.importId = importId;
@@ -199,6 +209,7 @@ public class PunishmentModel {
                 new PunishmentIssuer(this.issuerId, this.issuedAt),
                 this.reason,
                 this.expiry,
-                this.revoked ? new Revocation(this.revokedBy, this.revokedReason, this.revokedAt) : null);
+                this.revoked ? new Revocation(this.revokedBy, this.revokedReason, this.revokedAt) : null,
+                this.address == null ? null : InetAddresses.forString(this.address));
     }
 }

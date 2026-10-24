@@ -3,6 +3,7 @@ package com.lotusplugins.warrant.storage;
 import com.lotusplugins.warrant.api.model.HistoryPage;
 import com.lotusplugins.warrant.api.model.Punishment;
 import com.lotusplugins.warrant.api.model.PunishmentType;
+import java.net.InetAddress;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,8 @@ public interface PunishmentRepository {
 
     Optional<Punishment> findActive(UUID player, PunishmentType type);
 
+    Optional<Punishment> findActiveByAddress(InetAddress address);
+
     List<Punishment> findHistory(UUID player);
 
     HistoryPage findHistory(UUID player, Optional<PunishmentType> type, int offset, int limit);
@@ -26,4 +29,10 @@ public interface PunishmentRepository {
     List<Punishment> findUnacknowledgedWarnings(UUID player);
 
     void acknowledge(UUID punishmentId);
+
+    void recordAddress(UUID player, InetAddress address, Instant seenAt);
+
+    Optional<InetAddress> findLastAddress(UUID player);
+
+    List<UUID> findPlayersByAddress(InetAddress address);
 }

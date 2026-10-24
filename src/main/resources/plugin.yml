@@ -17,6 +17,15 @@ permissions:
   warrant.unban:
     description: Revoke player bans.
     default: op
+  warrant.ipban:
+    description: Issue permanent IP bans.
+    default: op
+  warrant.tempipban:
+    description: Issue temporary IP bans.
+    default: op
+  warrant.unipban:
+    description: Revoke IP bans.
+    default: op
   warrant.mute:
     description: Issue permanent player mutes.
     default: op
@@ -67,6 +76,9 @@ permissions:
       warrant.ban: true
       warrant.tempban: true
       warrant.unban: true
+      warrant.ipban: true
+      warrant.tempipban: true
+      warrant.unipban: true
       warrant.import: true
   warrant.*:
     description: All punishment permissions, including explicit exemption.

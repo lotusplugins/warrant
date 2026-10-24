@@ -7,6 +7,7 @@ import com.lotusplugins.warrant.api.model.Punishment;
 import com.lotusplugins.warrant.api.model.PunishmentType;
 import com.lotusplugins.warrant.storage.PunishmentRepository;
 import com.lotusplugins.warrant.storage.StorageException;
+import java.util.List;
 import java.util.logging.Level;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -35,6 +36,7 @@ public final class BanListener implements Listener {
         try {
             repository
                     .findActive(event.getUniqueId(), PunishmentType.BAN)
+                    .or(() -> repository.findActiveByAddress(event.getAddress()))
                     .ifPresent(ban -> event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, screen(ban)));
         } catch (StorageException e) {
             plugin.getLogger().log(Level.SEVERE, "Could not check login ban", e);
@@ -53,10 +55,21 @@ public final class BanListener implements Listener {
         });
     }
 
+    public void kickAddress(Punishment ban) {
+        Bukkit.getScheduler()
+                .runTask(
+                        plugin,
+                        () -> List.copyOf(Bukkit.getOnlinePlayers()).stream()
+                                .filter(player -> player.getAddress() != null
+                                        && ban.address()
+                                                .equals(player.getAddress().getAddress()))
+                                .forEach(player -> player.kickPlayer(screen(ban))));
+    }
+
     private String screen(Punishment ban) {
         return LegacyComponentSerializer.legacySection()
                 .serialize(config.message(
-                        "ban.screen",
+                        ban.type() == PunishmentType.IP_BAN ? "ban.ip-screen" : "ban.screen",
                         config.reason(ban.reason()),
                         config.remaining(ban.expiry()),
                         PunishmentDetails.resolvers(ban)));

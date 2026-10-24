@@ -157,6 +157,7 @@ public final class PunishmentCommands {
         return switch (punishment.type()) {
             case BAN -> Optional.of("/unban " + targetName + " ");
             case MUTE -> Optional.of("/unmute " + targetName + " ");
+            case IP_BAN -> Optional.of("/unipban " + targetName + " ");
             case WARN -> Optional.of("/unwarn " + targetName + " " + punishment.id() + " ");
             case KICK -> Optional.empty();
         };

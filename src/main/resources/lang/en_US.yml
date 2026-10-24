@@ -13,10 +13,17 @@ unmute:
 ban:
   already-active: "<red><name> is already banned"
   announce: "<red><name> was banned by <staff> for <duration>: <reason>"
+  ip-screen: "<red>Your IP address is banned for <remaining><newline><gray><reason><newline><dark_gray>ID: <id><newline>Issuer: <staff><newline>Issued: <date>"
   screen: "<red>You are banned for <remaining><newline><gray><reason><newline><dark_gray>ID: <id><newline>Issuer: <staff><newline>Issued: <date>"
+ipban:
+  already-active: "<red><name> is already IP banned"
+  announce: "<red><name> was IP banned by <staff> for <duration>: <reason>"
 unban:
   announce: "<green><name> was unbanned by <staff>: <reason>"
   not-active: "<red><name> is not banned"
+unipban:
+  announce: "<green><name> was IP unbanned by <staff>: <reason>"
+  not-active: "<red><name> is not IP banned"
 kick:
   announce: "<red><name> was kicked by <staff>: <reason>"
   screen: "<red>You were kicked by <staff><newline><gray><reason><newline><dark_gray>ID: <id><newline>Issued: <date>"

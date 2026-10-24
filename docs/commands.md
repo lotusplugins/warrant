@@ -18,6 +18,9 @@ sidebar:
 | `/ban <player> [reason]`                 | Permanently ban a player                        | `warrant.ban`      |
 | `/tempban <player> <duration> [reason]`  | Ban a player for a set time                     | `warrant.tempban`  |
 | `/unban <player> [reason]`               | Lift an active ban                              | `warrant.unban`    |
+| `/ipban <player\|ip> [reason]`            | Ban an IP address, or a player's last IP        | `warrant.ipban`    |
+| `/tempipban <player\|ip> <duration> [reason]` | Ban an IP address for a set time            | `warrant.tempipban`|
+| `/unipban <player\|ip> [reason]`          | Lift an active IP ban                           | `warrant.unipban`  |
 | `/punish history <player> [page]`        | View a player's punishment history              | `warrant.history`  |
 | `/punish import <source>`                | Import history from another plugin              | `warrant.import`   |
 

@@ -3,6 +3,7 @@ package com.lotusplugins.warrant;
 import com.lotusplugins.warrant.api.model.PunishmentType;
 import com.lotusplugins.warrant.command.CommandSupport;
 import com.lotusplugins.warrant.command.ImportCommands;
+import com.lotusplugins.warrant.command.IpBanCommands;
 import com.lotusplugins.warrant.command.KickCommands;
 import com.lotusplugins.warrant.command.PunishmentCommands;
 import com.lotusplugins.warrant.command.TimedPunishmentCommands;
@@ -14,6 +15,7 @@ import com.lotusplugins.warrant.importer.ImportSources;
 import com.lotusplugins.warrant.importer.LegacyH2;
 import com.lotusplugins.warrant.importer.PunishmentImporter;
 import com.lotusplugins.warrant.importer.ServerKnownPlayers;
+import com.lotusplugins.warrant.listener.AddressListener;
 import com.lotusplugins.warrant.listener.BanListener;
 import com.lotusplugins.warrant.listener.CacheLoadListener;
 import com.lotusplugins.warrant.listener.MuteListener;
@@ -57,6 +59,7 @@ public class WarrantPlugin extends JavaPlugin {
                 .registerEvents(new MuteListener(cache, config.blockedMuteCommands(), config, adventure), this);
         getServer().getPluginManager().registerEvents(warnListener, this);
         getServer().getPluginManager().registerEvents(banListener, this);
+        getServer().getPluginManager().registerEvents(new AddressListener(this, repository), this);
 
         var counter = new PunishmentCounter();
         PluginMetrics.start(this, counter, "H2", "standalone");
@@ -75,6 +78,7 @@ public class WarrantPlugin extends JavaPlugin {
         var timedCommands = new TimedPunishmentCommands(support, repository, config);
         timedCommands.register(commandManager, PunishmentType.MUTE, mute -> {});
         timedCommands.register(commandManager, PunishmentType.BAN, banListener::kick);
+        new IpBanCommands(support, repository, config).register(commandManager, banListener::kickAddress);
         new WarnCommands(support, repository, warnListener).register(commandManager);
         new KickCommands(scheduling, support, config).register(commandManager);
         var importer = new PunishmentImporter(
