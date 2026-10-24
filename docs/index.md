@@ -16,7 +16,7 @@ Warrant lets staff warn, kick, mute and ban players, permanently or for a set ti
 - **Mute command blocking.** Muted players can't use private-message commands like `/msg` or `/r`.
 - **MiniMessage formatting.** Every message lives in a language file and can be restyled.
 - **Importers.** Bring over history from Vanilla, LiteBans, AdvancedBan, LibertyBans and Essentials.
-- **Developer API.** Cancellable events fire whenever a punishment is issued or revoked.
+- **Developer API.** Look up punishments and history, and listen for cancellable events when a punishment is issued or revoked. Published on Maven Central.
 
 ## Where to next
 
@@ -25,4 +25,4 @@ Warrant lets staff warn, kick, mute and ban players, permanently or for a set ti
 - [Permissions](./permissions/) to set up your staff ranks.
 - [Configuration](./configuration/) and [Messages](./messages/) to customise the plugin.
 - [Importing](./importing/) to migrate from another punishment plugin.
-- [Developer API](./api/) to react to punishments from your own plugin.
+- [Developer API](./api/) to look up and react to punishments from your own plugin.

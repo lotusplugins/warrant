@@ -21,7 +21,7 @@ Warn, kick, mute and ban players, permanently or for a set time, with a full his
 - **Offline targets.** Ban, mute or warn players who aren't online. Warnings are delivered the next time they join.
 - **Mute command blocking.** Muted players can't use private-message commands like `/msg`, `/tell` or `/r`.
 - **MiniMessage formatting.** Every message lives in a language file and can be restyled.
-- **Developer API.** Cancellable events fire whenever a punishment is issued or revoked.
+- **Developer API.** Look up punishments and history, and listen for cancellable events when a punishment is issued or revoked. Published on Maven Central.
 
 ![Ban screen preview](.github/assets/ban_screen_img.png)
 
@@ -120,6 +120,23 @@ ban:
 ![Chat announcement preview](.github/assets/chat_announcement_img.png)
 
 ## Developer API
+
+Warrant is on Maven Central. Use `compileOnly`, because the server loads Warrant itself.
+
+```kotlin
+dependencies {
+    compileOnly("com.lotusplugins:warrant:<version>")
+}
+```
+
+Add `depend: [Warrant]` (or `softdepend`) to your `plugin.yml`, then look up punishments through the services manager. Every method returns a `CompletableFuture` and runs off the main thread.
+
+```java
+var api = getServer().getServicesManager().load(WarrantApi.class);
+api.findActive(uuid, PunishmentType.BAN).thenAccept(ban -> { /* ... */ });
+```
+
+See the [Developer API docs](docs/api.md) for every method.
 
 Listen for `PlayerPunishedEvent` and `PlayerPunishmentRevokedEvent` to react to punishments, or cancel them before they're saved.
 

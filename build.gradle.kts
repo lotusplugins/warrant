@@ -6,6 +6,7 @@ plugins {
   id("xyz.jpenilla.run-paper") version "3.1.0"
   id("com.modrinth.minotaur") version "2.10.0"
   id("io.papermc.hangar-publish-plugin") version "0.1.4"
+  id("com.vanniktech.maven.publish") version "0.37.0"
 }
 
 val pluginVersion = project.version.toString()
@@ -147,6 +148,34 @@ hangarPublish {
         jar.set(tasks.shadowJar.flatMap { it.archiveFile })
         platformVersions.set(supportedGameVersions)
       }
+    }
+  }
+}
+
+mavenPublishing {
+  publishToMavenCentral()
+  signAllPublications()
+  coordinates("com.lotusplugins", "warrant", pluginVersion)
+  pom {
+    name.set("Warrant")
+    description.set("Spigot punishment plugin with a read API for developers.")
+    url.set("https://github.com/lotusplugins/warrant")
+    licenses {
+      license {
+        name.set("GNU General Public License v3.0")
+        url.set("https://www.gnu.org/licenses/gpl-3.0.txt")
+      }
+    }
+    developers {
+      developer {
+        id.set("lotusplugins")
+        name.set("Lotus Plugins")
+      }
+    }
+    scm {
+      url.set("https://github.com/lotusplugins/warrant")
+      connection.set("scm:git:https://github.com/lotusplugins/warrant.git")
+      developerConnection.set("scm:git:ssh://git@github.com/lotusplugins/warrant.git")
     }
   }
 }
