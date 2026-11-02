@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.lotusplugins.warrant.Scheduling;
 import com.lotusplugins.warrant.ServerTestBase;
+import com.lotusplugins.warrant.api.model.Punishment;
+import com.lotusplugins.warrant.api.model.PunishmentIssuer;
 import com.lotusplugins.warrant.api.model.PunishmentType;
 import java.net.InetAddress;
 import java.time.Duration;
@@ -118,5 +120,77 @@ class BanListenerTest extends ServerTestBase {
         listener.kick(ban);
 
         assertDoesNotThrow(() -> server.getScheduler().performOneTick());
+    }
+
+    private AsyncPlayerPreLoginEvent preLogin(UUID uuid, InetAddress address) {
+        return new AsyncPlayerPreLoginEvent("Target", address, uuid, false);
+    }
+
+    private void storeIpBan(InetAddress address, Instant expiry) {
+        repository.create(new Punishment(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                PunishmentType.IP_BAN,
+                new PunishmentIssuer(UUID.randomUUID(), Instant.now()),
+                "griefing",
+                expiry,
+                null,
+                address));
+    }
+
+    @Test
+    void playerOnBannedAddressIsDisallowedWithIpScreen() throws Exception {
+        var address = InetAddress.getByName("203.0.113.7");
+        storeIpBan(address, null);
+        var event = preLogin(UUID.randomUUID(), address);
+
+        listener.onPreLogin(event);
+
+        assertEquals(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, event.getLoginResult());
+        assertTrue(event.getKickMessage().contains("IP address"));
+    }
+
+    @Test
+    void playerOnAnotherAddressIsAllowed() throws Exception {
+        storeIpBan(InetAddress.getByName("203.0.113.7"), null);
+        var event = preLogin(UUID.randomUUID(), InetAddress.getByName("203.0.113.8"));
+
+        listener.onPreLogin(event);
+
+        assertEquals(AsyncPlayerPreLoginEvent.Result.ALLOWED, event.getLoginResult());
+    }
+
+    @Test
+    void expiredIpBanIsAllowed() throws Exception {
+        var address = InetAddress.getByName("203.0.113.7");
+        storeIpBan(address, Instant.now().minus(Duration.ofHours(1)));
+        var event = preLogin(UUID.randomUUID(), address);
+
+        listener.onPreLogin(event);
+
+        assertEquals(AsyncPlayerPreLoginEvent.Result.ALLOWED, event.getLoginResult());
+    }
+
+    @Test
+    void personalBanTakesPrecedenceOverIpBan() throws Exception {
+        var address = InetAddress.getByName("203.0.113.7");
+        UUID uuid = UUID.randomUUID();
+        store(uuid, PunishmentType.BAN, null);
+        storeIpBan(address, null);
+        var event = preLogin(uuid, address);
+
+        listener.onPreLogin(event);
+
+        assertFalse(event.getKickMessage().contains("IP address"));
+    }
+
+    @Test
+    void storageFailureDeniesLogin() throws Exception {
+        repository.connectionSource.close();
+        var event = preLogin(UUID.randomUUID());
+
+        listener.onPreLogin(event);
+
+        assertEquals(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, event.getLoginResult());
     }
 }

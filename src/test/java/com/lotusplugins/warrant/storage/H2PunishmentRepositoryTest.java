@@ -371,4 +371,31 @@ class H2PunishmentRepositoryTest {
         assertTrue(repository.findActive(player, type).isEmpty());
         assertEquals(0, activeCount(type));
     }
+
+    @Test
+    void lastAddressIsEmptyForUnseenPlayer() {
+        assertTrue(repository.findLastAddress(player).isEmpty());
+    }
+
+    @Test
+    void recordedAddressReplacesThePreviousOne() throws Exception {
+        var first = java.net.InetAddress.getByName("203.0.113.7");
+        var second = java.net.InetAddress.getByName("2001:db8::1");
+
+        repository.recordAddress(player, first, Instant.now());
+        repository.recordAddress(player, second, Instant.now());
+
+        assertEquals(Optional.of(second), repository.findLastAddress(player));
+    }
+
+    @Test
+    void playersSharingAnAddressAreAllFound() throws Exception {
+        var shared = java.net.InetAddress.getByName("203.0.113.7");
+        UUID other = UUID.randomUUID();
+        repository.recordAddress(player, shared, Instant.now());
+        repository.recordAddress(other, shared, Instant.now());
+        repository.recordAddress(UUID.randomUUID(), java.net.InetAddress.getByName("203.0.113.8"), Instant.now());
+
+        assertEquals(Set.of(player, other), new HashSet<>(repository.findPlayersByAddress(shared)));
+    }
 }
