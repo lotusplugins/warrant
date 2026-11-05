@@ -5,6 +5,16 @@ sidebar:
   order: 7
 ---
 
+## Add the dependency
+
+The API is on Maven Central. Use `compileOnly` and declare Warrant as a dependency in your `plugin.yml`.
+
+```kotlin
+dependencies {
+    compileOnly("com.lotusplugins:warrant-api:VERSION")
+}
+```
+
 Warrant fires two cancellable events.
 
 | Event                          | Fired when                    |

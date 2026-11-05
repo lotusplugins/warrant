@@ -51,3 +51,12 @@ jobs:
           HANGAR_API_TOKEN: ${{ secrets.HANGAR_API_TOKEN }}
           HANGAR_PROJECT_ID: ${{ secrets.HANGAR_PROJECT_ID }}
         run: ./gradlew modrinth publishPluginPublicationToHangar --no-configuration-cache -Pversion="$VERSION"
+
+      - name: Publish API to Maven Central
+        if: ${{ !contains(github.ref_name, '-') }}
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: ./gradlew publishAggregationToCentralPortal --no-configuration-cache -Pversion="$VERSION"
