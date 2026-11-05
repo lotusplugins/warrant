@@ -36,6 +36,7 @@ repositories {
 val legacyH2: Configuration by configurations.creating
 
 dependencies {
+  implementation(project(":api"))
   legacyH2("com.h2database:h2:1.4.199")
   compileOnly("org.spigotmc:spigot-api:26.2-R0.1-SNAPSHOT")
   compileOnly("net.luckperms:api:5.5")
@@ -86,6 +87,7 @@ tasks.jacocoTestReport {
 
 spotless {
   java {
+    target("src/main/java/**/*.java", "src/test/java/**/*.java", "api/src/main/java/**/*.java")
     palantirJavaFormat()
     removeUnusedImports()
     trimTrailingWhitespace()
