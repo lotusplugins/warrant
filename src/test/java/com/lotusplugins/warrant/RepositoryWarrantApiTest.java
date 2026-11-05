@@ -1,4 +1,4 @@
-package com.lotusplugins.warrant.api;
+package com.lotusplugins.warrant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,16 +15,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-class WarrantApiTest {
+class RepositoryWarrantApiTest {
 
     private final UUID player = UUID.randomUUID();
     private H2PunishmentRepository repository;
-    private WarrantApi api;
+    private RepositoryWarrantApi api;
 
     @BeforeEach
     void setUp(@TempDir File dataFolder) throws Exception {
         repository = new H2PunishmentRepository(dataFolder);
-        api = new WarrantApi(repository, Runnable::run);
+        api = new RepositoryWarrantApi(repository, Runnable::run);
     }
 
     private Punishment ban(Instant expiry) {

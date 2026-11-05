@@ -66,7 +66,7 @@ public class WarrantPlugin extends JavaPlugin {
         Executor async = task -> getServer().getScheduler().runTaskAsynchronously(this, task);
         getServer()
                 .getServicesManager()
-                .register(WarrantApi.class, new WarrantApi(repository, async), this, ServicePriority.Normal);
+                .register(WarrantApi.class, new RepositoryWarrantApi(repository, async), this, ServicePriority.Normal);
 
         var counter = new PunishmentCounter();
         PluginMetrics.start(this, counter, "H2", "standalone");
